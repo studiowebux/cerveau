@@ -1,5 +1,4 @@
 .env
-*.json
-*.md
+output/*.json
+output/*.md
 .DS_Store
-!README.md

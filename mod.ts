@@ -1,6 +1,6 @@
 // deno run --allow-net --allow-env --env-file --allow-write --allow-read --watch mod.ts
-import { Hono } from "npm:hono";
-import { serveStatic } from "npm:hono/deno";
+import { Hono } from "hono";
+import { serveStatic } from "hono/deno";
 import { randomUUID } from "node:crypto";
 
 import { callOllama } from "./llm.ts";
