@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="en" class="transition-colors duration-500">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Agent Chat Interface</title>
+
+        <!-- Tailwind CDN -->
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            // Enable dark mode class strategy for Tailwind
+            tailwind.config = {
+                darkMode: "class",
+            };
+        </script>
+
+        <!-- HTMX -->
+        <script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.6/dist/htmx.min.js"></script>
+
+        <style>
+            .htmx-indicator {
+                display: none;
+            }
+            .htmx-request .htmx-indicator {
+                display: inline;
+            }
+            .htmx-request.htmx-indicator {
+                display: inline;
+            }
+        </style>
+    </head>
+    <body
+        class="bg-gray-100 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col items-center p-6"
+    >
+        <div class="w-full max-w-xl">
+            <header class="flex justify-between items-center mb-6">
+                <h1 class="text-3xl font-bold">Agent Chat</h1>
+                <button
+                    id="mode-toggle"
+                    class="px-3 py-1 rounded border border-gray-700 dark:border-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition"
+                >
+                    Toggle Dark Mode
+                </button>
+            </header>
+
+            <form id="chat-form" class="space-y-4">
+                <div>
+                    <label for="agent-select" class="block mb-1 font-semibold"
+                        >Select Agent:</label
+                    >
+                    <select
+                        id="agent-select"
+                        name="agent"
+                        hx-get="/agents"
+                        hx-target="#agent-select"
+                        hx-trigger="load"
+                        hx-swap="innerHTML"
+                        class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-gray-100"
+                    >
+                        <option>Loading agents...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="backend-select" class="block mb-1 font-semibold"
+                        >Select Backend:</label
+                    >
+                    <select
+                        id="backend-select"
+                        name="backend"
+                        hx-get="/backends"
+                        hx-target="#backend-select"
+                        hx-trigger="load"
+                        hx-swap="innerHTML"
+                        class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-gray-100"
+                    >
+                        <option>Loading backends...</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="input-text" class="block mb-1 font-semibold"
+                        >Enter Text:</label
+                    >
+                    <textarea
+                        id="input-text"
+                        name="text"
+                        rows="5"
+                        class="w-full rounded border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 text-gray-900 dark:text-gray-100 resize-y"
+                    ></textarea>
+                </div>
+
+                <div class="flex gap-4">
+                    <p id="indicator" class="htmx-indicator">
+                        Working on it...
+                    </p>
+                </div>
+
+                <div class="flex gap-4">
+                    <button
+                        type="submit"
+                        id="submit-btn"
+                        hx-post="/submit"
+                        hx-target="#response"
+                        hx-include="#agent-select, #backend-select, #input-text"
+                        hx-swap="innerHTML"
+                        hx-indicator="#indicator"
+                        class="flex-1 bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 rounded transition-colors duration-200"
+                    >
+                        Submit
+                    </button>
+
+                    <button
+                        type="button"
+                        id="replace-btn"
+                        class="flex-1 border border-gray-400 dark:border-gray-600 hover:bg-gray-300 dark:hover:bg-gray-700 text-gray-900 dark:text-gray-100 font-semibold py-2 rounded transition-colors duration-200"
+                    >
+                        Replace Textarea with Response
+                    </button>
+                </div>
+
+                <div
+                    id="response"
+                    class="mt-4 p-4 border border-gray-300 dark:border-gray-700 rounded bg-white dark:bg-gray-800 min-h-[100px] whitespace-pre-wrap text-gray-900 dark:text-gray-100"
+                ></div>
+            </form>
+        </div>
+
+        <script>
+            const replaceBtn = document.getElementById("replace-btn");
+            const textarea = document.getElementById("input-text");
+            const responseDiv = document.getElementById("response");
+            const modeToggle = document.getElementById("mode-toggle");
+            const htmlEl = document.documentElement;
+
+            replaceBtn.addEventListener("click", () => {
+                if (responseDiv.textContent.trim() !== "") {
+                    textarea.value = responseDiv.textContent.trim();
+                } else {
+                    alert("No response to replace textarea with!");
+                }
+            });
+
+            modeToggle.addEventListener("click", () => {
+                htmlEl.classList.toggle("dark");
+                // Optionally persist mode in localStorage
+                if (htmlEl.classList.contains("dark")) {
+                    localStorage.setItem("theme", "dark");
+                } else {
+                    localStorage.setItem("theme", "light");
+                }
+            });
+
+            // On load, apply saved theme
+            (function () {
+                const savedTheme = localStorage.getItem("theme");
+                if (savedTheme === "dark") {
+                    htmlEl.classList.add("dark");
+                }
+            })();
+        </script>
+    </body>
+</html>
