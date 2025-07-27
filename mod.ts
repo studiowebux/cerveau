@@ -12,6 +12,7 @@ import { agents as feedbackAgents } from "./agents/feedback.ts";
 import { agents as gameAgents } from "./agents/game.ts";
 import { agents as genreAgents } from "./agents/genre.ts";
 import { agents as nameAgents } from "./agents/name.ts";
+import { agents as appAgents } from "./agents/app.ts";
 
 const agents = [
   ...projectAgents,
@@ -21,6 +22,7 @@ const agents = [
   ...gameAgents,
   ...genreAgents,
   ...nameAgents,
+  ...appAgents,
 ];
 
 export type Agent = {
