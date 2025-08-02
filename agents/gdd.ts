@@ -424,7 +424,7 @@ export const agents: Agent[] = [
     ],
   },
   {
-    name: "SystemsArchitectAgent",
+    name: "SystemsECSArchitectAgent",
     role:
       "Designs reusable, scalable systems using ECS and common design patterns to support large-scale game architectures.",
     systemPrompt:
